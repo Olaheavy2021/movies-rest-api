@@ -8,4 +8,6 @@ public class MovieResponse
     public required int YearOfRelease { get; init; }
 
     public IEnumerable<string> Genres { get; init; } = Enumerable.Empty<string>();
+
+    public required string Slug { get; init; }
 }

@@ -1,7 +1,10 @@
+using Movies.API.Mapping;
 using Movies.Application;
+using Movies.Application.Database;
 using Movies.Application.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 // Add services to the container.
 
@@ -12,6 +15,7 @@ builder.Services.AddSwaggerGen();
 
 // Add any additional services here, such as database context, repositories, etc.
 builder.Services.AddApplication();
+builder.Services.AddDatabase(config["Database:ConnectionString"]!);
 
 var app = builder.Build();
 
@@ -26,6 +30,10 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseMiddleware<ValidationMappingMiddleware>();
 app.MapControllers();
+
+var dbInitializer = app.Services.GetRequiredService<DBInitializer>();
+await dbInitializer.InitializeAsync();
 
 app.Run();
